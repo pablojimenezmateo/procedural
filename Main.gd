@@ -85,19 +85,24 @@ func _process(delta):
 #		active_camera.set_transform(newTransform)
 	var camSpeed = 5
 	var camera = get_node("ghost_cam")
+	var cube = get_node("TestCube")
 
 	
 	if Input.is_action_pressed("ui_up"):
 		camera.set_translation(camera.get_translation() - camera.get_global_transform().basis[2] * delta* camSpeed)
+		#cube.set_translation(cube.get_translation() - cube.get_global_transform().basis[2] * delta* camSpeed)
 		
 	if Input.is_action_pressed("ui_down"):
 		camera.set_translation(camera.get_translation() + camera.get_global_transform().basis[2] * delta* camSpeed)
+		#cube.set_translation(cube.get_translation() + cube.get_global_transform().basis[2] * delta* camSpeed)
 		
 	if Input.is_action_pressed("ui_left"):
 		camera.set_translation(camera.get_translation() - camera.get_global_transform().basis[0] * delta* camSpeed)
+		#cube.set_translation(cube.get_translation() - cube.get_global_transform().basis[0] * delta* camSpeed)
 		
 	if Input.is_action_pressed("ui_right"):
 		camera.set_translation(camera.get_translation() + camera.get_global_transform().basis[0] * delta* camSpeed)
+		#cube.set_translation(cube.get_translation() + cube.get_global_transform().basis[0] * delta* camSpeed)
 		
 
 
@@ -113,5 +118,13 @@ func _input(event):
 		yaw = fmod(yaw - event.relative_x * view_sensitivity, 360)
 		pitch = max(min(pitch - event.relative_y * view_sensitivity, 90), -90)
 		
-		camera.set_rotation(Vector3(0, deg2rad(yaw), 0)) #Moves left and right
-		camera.set_rotation(Vector3(deg2rad(pitch), 0, 0)) #Moves up and down
+		#camera.set_rotation(Vector3(deg2rad(pitch), deg2rad(yaw), 0)) #Moves left and right
+		#camera.set_rotation(Vector3(0, deg2rad(yaw), 0)) #Moves left and right
+		#camera.set_rotation(Vector3(deg2rad(pitch), 0, 0)) #Moves up and down
+
+		#var origin = camera.get_global_transform().origin
+		#var basis = camera.get_global_transform().basis
+		
+		var transform = camera.get_global_transform().rotated(Vector3(0, 1, 0), deg2rad(yaw))
+		var transform = camera.get_global_transform().rotated(Vector3(1, 0, 0), deg2rad(pitch))
+		camera.set_global_transform(transform)
