@@ -1,9 +1,14 @@
 extends Spatial
 
+var building = preload("res://resources/cube.res")
+
 func _ready():
 	set_process(true)
 	set_process_input(true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	var b = building.instance()
+	add_child(b)
 		
 func _process(delta):
 

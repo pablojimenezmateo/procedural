@@ -1,4 +1,7 @@
-::res://::1423175774
-Main.gd::GDScript::1423175769::
-Main.scn::PackedScene::1423175556::
+::res://::1423230142
+Main.gd::GDScript::1423230142::
+Main.scn::PackedScene::1423230102::
 icon.png::ImageTexture::1423051284::
+::res://resources::1423229585
+cube.scn::PackedScene::1423229585::scene_3d<>resources/cube.dae<>8a2e97a839d0a3f1609b35d3beca2414<>1423229570
+white.png::ImageTexture::1423229446::
