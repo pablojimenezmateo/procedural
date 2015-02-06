@@ -8,6 +8,10 @@ var cubes = []
 var cubeCount = -1
 
 func _ready():
+
+	#The initial seed
+	rand_seed(42)
+
 	set_process(true)
 	set_process_input(true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -16,6 +20,9 @@ func _ready():
 	var g = ground.instance()
 	g.set_name("ground")
 	add_child(g)
+	
+	#Trials
+	blockyBuilding(0, 0, 0, 0.4, 1)
 
 #This is used to translate the camera around
 func _process(delta):
@@ -88,6 +95,11 @@ func _input(event):
 #Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz
 func addCube(x, y, z, dx, dy, dz):
 
+	print("Creating cube")
+	print("dx: ", dx)
+	print("dy: ", dy)
+	print("dz: ", dz)
+	
 	#Instanciate the .res
 	var b = cube.instance()
 	
@@ -98,11 +110,22 @@ func addCube(x, y, z, dx, dy, dz):
 	#Add it to the scene
 	add_child(b)
 	
-	#Move
-	get_node(currentName).set_translation(Vector3(x, y, z))
+	#Move, and make sure it is above the ground
+	get_node(currentName).set_translation(Vector3(x, y + dy, z))
 	
 	#Resize
 	get_node(currentName).set_scale(Vector3(dx, dy, dz))
 	
 	#Keep the count
 	cubeCount += 1
+
+#Adds a blocky building in x, y, z on an area of size*size and height maxHeight
+func blockyBuilding(x, y, z, size, maxHeight):
+	
+	#Floor
+	addCube(x, y, z, size, 0.005, size)
+		
+	#Big block
+	addCube(x, y, z, rand_range(0.6 * size, 0.8 * size), maxHeight, rand_range(0.6 * size, 0.8 * size))
+	
+	
