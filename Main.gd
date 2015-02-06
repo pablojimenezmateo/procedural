@@ -5,7 +5,7 @@ var ground = preload("res://resources/ground.res")
 
 #Where the cube names
 var cubes = []
-var cubeCount = -1
+var cubeCount = 0
 
 func _ready():
 
@@ -96,9 +96,7 @@ func _input(event):
 func addCube(x, y, z, dx, dy, dz):
 
 	print("Creating cube")
-	print("dx: ", dx)
-	print("dy: ", dy)
-	print("dz: ", dz)
+	print("Cube count: ", cubeCount)
 	
 	#Instanciate the .res
 	var b = cube.instance()
@@ -125,7 +123,40 @@ func blockyBuilding(x, y, z, size, maxHeight):
 	#Floor
 	addCube(x, y, z, size, 0.005, size)
 		
-	#Big block
-	addCube(x, y, z, rand_range(0.6 * size, 0.8 * size), maxHeight, rand_range(0.6 * size, 0.8 * size))
+	##First block
+	#Base
+	var dxBase = rand_range(0.4 * size, 0.6 * size)
+	var dzBase = rand_range(0.4 * size, 0.6 * size)
 	
+	#Offset from the middle
+	var xOffset = rand_range(0, 0.4 * size)
+	var zOffset = rand_range(0, 0.4 * size)
+	
+	addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase)
+	
+	##Rest of the blocks
+	var h = maxHeight
+	
+	#Stop when we want to put a building of height lesss than the 20% of the original height
+	while(h > 0.5 * maxHeight):
+		
+		#The height for the next "addition" must be lower than the previous one
+		h = rand_range(0.5 * h, h)
+		
+		#Creates the new cube outside the big building, its size cannot be lower than the 30% of the original size
+		#and it cannot leave the floor
+		var dxLocal = rand_range(0.25 * size, min(xOffset, zOffset))
+		var dzLocal = rand_range(0.25 * size, min(xOffset, zOffset))
+		
+		#This coordinates will put the new buildings in the corner of the big one
+		var xLocal = x + xOffset - dxBase - dxLocal
+		var zLocal = z + zOffset - dzBase - dzLocal
+		
+		#Now we calculate the final position of the new building, either move in the X side or the Z
+		var toggleAxis = randi() % 2
+		xLocal = xLocal + rand_range(dxLocal*2, dxBase*2) * toggleAxis
+		zLocal = zLocal + rand_range(dzLocal*2, dzBase*2) * ((toggleAxis + 1) % 2)
+		
+		addCube(xLocal, y, zLocal, dxLocal, h, dzLocal)
+		
 	
