@@ -16,7 +16,8 @@ func _ready():
 	var g = ground.instance()
 	g.set_name("ground")
 	add_child(g)
-	
+
+#This is used to translate the camera around
 func _process(delta):
 
 	var camSpeed = 5
@@ -44,6 +45,7 @@ var yaw = 0
 #Vertical movement
 var pitch = 0
 
+#This function is used to rotate the camera
 func _input(event):
 
 	var view_sensitivity = 0.003
