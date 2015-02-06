@@ -1,15 +1,22 @@
 extends Spatial
 
-var building = preload("res://resources/cube.res")
+var cube = preload("res://resources/cube.res")
+var ground = preload("res://resources/ground.res")
+
+#Where the cube names
+var cubes = []
+var cubeCount = -1
 
 func _ready():
 	set_process(true)
 	set_process_input(true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	var b = building.instance()
-	add_child(b)
-		
+	#Add ground
+	var g = ground.instance()
+	g.set_name("ground")
+	add_child(g)
+	
 func _process(delta):
 
 	var camSpeed = 5
@@ -31,7 +38,10 @@ func _process(delta):
 	if Input.is_action_pressed("quit"):
 		get_tree().quit()
 
+#Horizontal movement
 var yaw = 0
+
+#Vertical movement
 var pitch = 0
 
 func _input(event):
@@ -42,8 +52,9 @@ func _input(event):
 	
 	if (event.type == InputEvent.MOUSE_MOTION):
 	
-		yaw = yaw - event.relative_x * view_sensitivity #Horizontal
-		pitch = pitch - event.relative_y * view_sensitivity #Vertical
+		#Calculate the rotation angle
+		yaw = yaw - event.relative_x * view_sensitivity 
+		pitch = pitch - event.relative_y * view_sensitivity
 	
 		#Yeah!, maths!
 		
@@ -71,3 +82,25 @@ func _input(event):
 		
 		#Move it back
 		camera.set_translation(trans)
+
+#Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz
+func addCube(x, y, z, dx, dy, dz):
+
+	#Instanciate the .res
+	var b = cube.instance()
+	
+	#Set a name so we can work with it later
+	var currentName = "c" + str(cubeCount)
+	b.set_name(currentName)
+	
+	#Add it to the scene
+	add_child(b)
+	
+	#Move
+	get_node(currentName).set_translation(Vector3(x, y, z))
+	
+	#Resize
+	get_node(currentName).set_scale(Vector3(dx, dy, dz))
+	
+	#Keep the count
+	cubeCount += 1
