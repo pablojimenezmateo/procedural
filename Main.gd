@@ -2,10 +2,13 @@ extends Spatial
 
 var cube = preload("res://resources/cube.res")
 var ground = preload("res://resources/ground.res")
+var palm = preload("res://resources/palm.res")
 
 #Where the cube names
 var cubes = []
 var cubeCount = 0
+var palms = []
+var palmCount = 0
 
 func _ready():
 
@@ -145,8 +148,8 @@ func blockyBuilding(x, y, z, size, maxHeight):
 		#The height for the next "addition" must be lower than the previous one
 		h = rand_range(0.5 * h, h)
 		
-		#Creates the new cube outside the big building, its size cannot be lower than the 30% of the original size
-		#and it cannot leave the floor
+		#Creates the new cube outside the big building, its size cannot be lower than the 25% of the original size
+		#and it cannot leave the parcel
 		var dxLocal = rand_range(0.25 * size, min(xOffset, zOffset)) - 0.01
 		var dzLocal = rand_range(0.25 * size, min(xOffset, zOffset)) - 0.01
 		
@@ -176,3 +179,29 @@ func blockyBuilding(x, y, z, size, maxHeight):
 			addCube(xLocal, y, zLocal, dxLocal, h, dzLocal)
 			nodes.push_back([xLocal, zLocal, dxLocal, dzLocal, toggleAxis])
 				
+	##Add palms
+	var palmNumber = randi() % 7
+	
+	for i in range(palmNumber):
+	
+		#Corner of the building + offset
+		var xLocal = x + xOffset - dxBase - 0.2 
+		var zLocal = z + zOffset - dzBase - 0.2 
+		xLocal -= rand_range(xLocal, abs(xOffset))
+		zLocal -= rand_range(zLocal, abs(zOffset))
+		
+		var p = palm.instance()
+		var name = "p" + str(palmCount)
+		palmCount += 1
+		p.set_name(name)
+		
+		#Add it to the scene
+		add_child(p)
+		
+		#Move, and make sure it is above the ground
+		get_node(name).set_translation(Vector3(xLocal, 0, zLocal))
+		
+		#Resize
+		var scale = get_node(name).get_scale()
+		var modifier = rand_range(0.1, 1)
+		get_node(name).set_scale(scale * modifier)

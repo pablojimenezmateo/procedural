@@ -1,8 +1,9 @@
-::res://::1423255554
-Main.gd::GDScript::1423255554::
-Main.scn::PackedScene::1423248496::
+::res://::1423313562
+Main.gd::GDScript::1423313562::
+Main.scn::PackedScene::1423313562::
 icon.png::ImageTexture::1423051284::
-::res://resources::1423231836
+::res://resources::1423313720
 cube.res::PackedScene::1423230764::
 ground.res::PackedScene::1423231648::scene_3d<>resources/floor.dae<>30b978926660de126e38117b13a01e57<>0
+palm.res::PackedScene::1423313689::
 white.png::ImageTexture::1423229446::
