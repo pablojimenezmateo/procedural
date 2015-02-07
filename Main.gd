@@ -4,10 +4,7 @@ var cube = preload("res://resources/cube.res")
 var ground = preload("res://resources/ground.res")
 var palm = preload("res://resources/palm.res")
 
-#Where the cube names
-var cubes = []
 var cubeCount = 0
-var palms = []
 var palmCount = 0
 
 func _ready():
@@ -185,17 +182,20 @@ func blockyBuilding(x, y, z, size, maxHeight):
 	for i in range(palmNumber):
 	
 		#Corner of the building + offset
-		var xLocal = x + xOffset - dxBase - 0.2 
-		var zLocal = z + zOffset - dzBase - 0.2 
-		xLocal -= rand_range(xLocal, abs(xOffset))
-		zLocal -= rand_range(zLocal, abs(zOffset))
+		var xLocal = x + xOffset - dxBase - 0.05
+		var zLocal = z + zOffset - dzBase - 0.05
 		
+		#Distance from the corner of the building to the corner of the base
+		var dist = sqrt(pow(xLocal - x + dxBase, 2) + pow(zLocal - z + dzBase,2))
+		
+		xLocal -= rand_range(0, dist)
+		zLocal -= rand_range(0, dist)
+		
+		#Add it to the scene
 		var p = palm.instance()
 		var name = "p" + str(palmCount)
 		palmCount += 1
 		p.set_name(name)
-		
-		#Add it to the scene
 		add_child(p)
 		
 		#Move, and make sure it is above the ground
@@ -205,3 +205,6 @@ func blockyBuilding(x, y, z, size, maxHeight):
 		var scale = get_node(name).get_scale()
 		var modifier = rand_range(0.1, 1)
 		get_node(name).set_scale(scale * modifier)
+		
+		#Rotate
+		get_node(name).set_rotation(Vector3(deg2rad(90), 0, deg2rad(rand_range(0, 180))))
