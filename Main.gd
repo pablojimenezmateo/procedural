@@ -23,8 +23,9 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-	for i in range(10):
-		blockyBuilding(0, 0, 9 - i*2, rand_range(0.4, 1), rand_range(0.5, 1))
+#	for i in range(10):
+#		blockyBuilding(0, 0, 9 - i*2, rand_range(0.4, 1), rand_range(0.4, 1), rand_range(0.5, 1))
+	house(0, 0, 0, 1, 1)
 
 #This is used to translate the camera around
 func _process(delta):
@@ -120,19 +121,19 @@ func addCube(x, y, z, dx, dy, dz):
 	cubeCount += 1
 
 #Adds a blocky building in x, y, z on an area of size*size and height maxHeight
-func blockyBuilding(x, y, z, size, maxHeight):
+func blockyBuilding(x, y, z, dx, dz, maxHeight):
 	
 	#Floor
-	addCube(x, y, z, size, 0.005, size)
+	addCube(x, y, z, dx, 0.005, dz)
 		
 	##First block
 	#Base
-	var dxBase = rand_range(0.4 * size, 0.6 * size)
-	var dzBase = rand_range(0.4 * size, 0.6 * size)
+	var dxBase = rand_range(0.4 * dx, 0.6 * dx)
+	var dzBase = rand_range(0.4 * dz, 0.6 * dz)
 	
 	#Offset from the middle
-	var xOffset = rand_range(0, 0.4 * size)
-	var zOffset = rand_range(0, 0.4 * size)
+	var xOffset = rand_range(0, 0.4 * dx)
+	var zOffset = rand_range(0, 0.4 * dz)
 	addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase)
 	
 	##Rest of the blocks
@@ -148,8 +149,8 @@ func blockyBuilding(x, y, z, size, maxHeight):
 		
 		#Creates the new cube outside the big building, its size cannot be lower than the 25% of the original size
 		#and it cannot leave the parcel
-		var dxLocal = rand_range(0.25 * size, min(xOffset, zOffset)) - 0.01
-		var dzLocal = rand_range(0.25 * size, min(xOffset, zOffset)) - 0.01
+		var dxLocal = rand_range(0.25 * dx, min(xOffset, zOffset)) - 0.01
+		var dzLocal = rand_range(0.25 * dz, min(xOffset, zOffset)) - 0.01
 		
 		#This coordinates will put the new buildings in the corner of the big one
 		var xLocal = x + xOffset - dxBase - dxLocal
@@ -209,3 +210,20 @@ func blockyBuilding(x, y, z, size, maxHeight):
 		
 		#Rotate
 		get_node(name).set_rotation(Vector3(deg2rad(90), 0, deg2rad(rand_range(0, 180))))
+
+#Adds a house in x, y, z on an area of size*size
+func house(x, y, z, dx, dz):
+
+	#Floor
+	addCube(x, y, z, dx, 0.005, dz)
+		
+	##First block
+	#Base
+	var dxBase = rand_range(0.4 * dx, 0.7 * dx)
+	var dzBase = rand_range(0.4 * dz, 0.7 * dz)
+	
+	#Offset from the middle
+	var xOffset = rand_range(0, 0.4 * dx)
+	var zOffset = rand_range(0, 0.4 * dz)
+	
+	addCube(x + xOffset, y, z + zOffset, dxBase, min(dx, dz) / 3.5, dzBase)
