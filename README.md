@@ -10,6 +10,10 @@ Goals
 * Free camera (Counter-Strike death camera like). ✔
 * Get a cube with transparency to work. ✔
 * Creation of the buildings.
+  * Block buildings. ✔
+    * Maybe add some palms. ✔
+  * Regular buildings.
+  * Small houses.
 * Division of the terrain using Voronoi Diagrams.
 * Creation of the streets.
 

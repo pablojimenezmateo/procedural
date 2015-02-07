@@ -23,7 +23,8 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-	blockyBuilding(0, 0, 0, 0.4, 1)
+	for i in range(10):
+		blockyBuilding(0, 0, 9 - i*2, rand_range(0.4, 1), rand_range(0.5, 1))
 
 #This is used to translate the camera around
 func _process(delta):
