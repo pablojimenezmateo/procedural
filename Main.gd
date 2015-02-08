@@ -268,8 +268,8 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 	for i in range(blocks):
 		addCube(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, "piramidal" + str(houseCount))
 		yPos += 2* heights[i]
-		dxBase *= 0.8
-		dzBase *= 0.8
+		dxBase *= rand_range(0.6, 0.8)
+		dzBase *= rand_range(0.6, 0.8)
 
 
 

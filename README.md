@@ -12,7 +12,8 @@ Goals
 * Creation of the buildings.
   * Block buildings. ✔
     * Maybe add some palms. ✔ ~~[Video](http://youtu.be/ZoA9LGPK1aw)~~ [New video](http://youtu.be/KuFNl1qacbk)
-  * Regular buildings.
+  * Piramidal buildings. [Video](http://youtu.be/2TflFoWQHJs)
+    * Maybe add some details.
   * Small houses.
 * Division of the terrain using Voronoi Diagrams.
 * Creation of the streets.
