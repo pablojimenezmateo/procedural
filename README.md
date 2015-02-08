@@ -15,7 +15,7 @@ Goals
     * Add floor framings.
   * Piramidal buildings. [Video](http://youtu.be/2TflFoWQHJs)
     * Maybe add some details.
-  * Residential buildings. ✔
+  * Residential buildings. ✔ [Video](http://youtu.be/bdShgGLUZZk)
     * Add details to the inner patio.
   * Small houses.
   * Park.
