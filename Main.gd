@@ -8,8 +8,15 @@ var palm = preload("res://resources/palm.res")
 
 var cubeCount = 0
 var palmCount = 0
+
 var blockyBuildingCount = 0
 var blockyBuildings = []
+
+var houseCount = 0
+var houses = []
+
+var piramidalBuildingCount = 0
+var piramidalBuildings = []
 
 func _ready():
 
@@ -27,13 +34,19 @@ func _ready():
 	add_child(g)
 	
 	#Trials
+#	for i in range(10):
+#		for j in range(10):
+#			addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
 	for i in range(10):
 		for j in range(10):
-			blockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#	house(0, 0, 0, 1, 1)
-#	blockyBuilding(0, 0, 0, 1, 1)
-
-#	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, 7*PI/6, 0))
+			if randi() % 2 == 0:
+				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			else:
+				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#	addHouse(0, 0, 0, 1, 1)
+#	addBlockyBuilding(0, 0, 0, 1, 1)
+#	addPiramidalBuilding(0, 0, 0, 1, 1)
+	#get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
 	
 
 #This is used to translate the camera around
@@ -132,8 +145,8 @@ func addCube(x, y, z, dx, dy, dz, id):
 	#Keep the count
 	cubeCount += 1
 
-#Adds a blocky building in x, y, z on an area of size*size and height maxHeight
-func blockyBuilding(x, y, z, dx, dz):
+#Adds a blocky building in x, y, z on an area of size*size
+func addBlockyBuilding(x, y, z, dx, dz):
 	
 	#Floor
 	addCube(x, y, z, dx, 0.005, dz, "blocky" + str(blockyBuildingCount))
@@ -216,12 +229,56 @@ func blockyBuilding(x, y, z, dx, dz):
 	
 	blockyBuildingCount += 1
 
-#Adds a house in x, y, z on an area of size*size
-func house(x, y, z, dx, dz):
+#Adds a blocky building in x, y, z on an area of size*size
+func addPiramidalBuilding(x, y, z, dx, dz):
 
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz)
+	addCube(x, y, z, dx, 0.005, dz, "piramidal" + str(houseCount))
+	
+	##Bottom block
+	#Base
+	var dxBase = rand_range(0.4 * dx, 0.6 * dx)
+	var dzBase = rand_range(0.4 * dz, 0.6 * dz)
+	
+	#Offset from the middle
+	var xOffset = rand_range(0, 0.4 * dx)
+	var zOffset = rand_range(0, 0.4 * dz)
+	
+	#Height
+	var maxHeight = 0
+	
+	if randi() % 2 == 0:
+		maxHeight = min(dxBase, dzBase) * 5
 		
+	else:
+		maxHeight = max(dxBase, dzBase) * 5
+		
+	#How many blocks
+	var blocks = int(rand_range(3, 6))
+	
+	#Set the heights
+	var heights = []
+	
+	for i in range(blocks):
+		maxHeight /= 2
+		heights.push_back(maxHeight)
+	
+	#Build the blocks
+	var yPos = 0
+	for i in range(blocks):
+		addCube(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, "piramidal" + str(houseCount))
+		yPos += 2* heights[i]
+		dxBase *= 0.8
+		dzBase *= 0.8
+
+
+
+#Adds a house in x, y, z on an area of size*size
+func addHouse(x, y, z, dx, dz):
+
+	#Floor
+	addCube(x, y, z, dx, 0.005, dz, "house" + str(houseCount))
+	
 	##First block
 	#Base
 	var dxBase = rand_range(0.4 * dx, 0.7 * dx)
@@ -231,4 +288,6 @@ func house(x, y, z, dx, dz):
 	var xOffset = rand_range(0, 0.4 * dx)
 	var zOffset = rand_range(0, 0.4 * dz)
 	
-	addCube(x + xOffset, y, z + zOffset, dxBase, min(dx, dz) / 3.5, dzBase)
+	addCube(x + xOffset, y, z + zOffset, dxBase, min(dx, dz) / 3.5, dzBase, "house" + str(houseCount))
+	
+	houseCount += 1
