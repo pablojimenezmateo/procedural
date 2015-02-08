@@ -1,11 +1,15 @@
 extends Spatial
 
+#1 meter = 0.01 units
+
 var cube = preload("res://resources/cube.res")
 var ground = preload("res://resources/ground.res")
 var palm = preload("res://resources/palm.res")
 
 var cubeCount = 0
 var palmCount = 0
+var blockyBuildingCount = 0
+var blockyBuildings = []
 
 func _ready():
 
@@ -23,9 +27,14 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-#	for i in range(10):
-#		blockyBuilding(0, 0, 9 - i*2, rand_range(0.4, 1), rand_range(0.4, 1), rand_range(0.5, 1))
-	house(0, 0, 0, 1, 1)
+	for i in range(10):
+		for j in range(10):
+			blockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#	house(0, 0, 0, 1, 1)
+#	blockyBuilding(0, 0, 0, 1, 1)
+
+#	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, 7*PI/6, 0))
+	
 
 #This is used to translate the camera around
 func _process(delta):
@@ -96,7 +105,7 @@ func _input(event):
 		camera.set_translation(trans)
 
 #Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz
-func addCube(x, y, z, dx, dy, dz):
+func addCube(x, y, z, dx, dy, dz, id):
 
 	print("Creating cube")
 	print("Cube count: ", cubeCount)
@@ -117,14 +126,17 @@ func addCube(x, y, z, dx, dy, dz):
 	#Resize
 	get_node(currentName).set_scale(Vector3(dx, dy, dz))
 	
+	#Add to group
+	get_node(currentName).add_to_group(id)
+	
 	#Keep the count
 	cubeCount += 1
 
 #Adds a blocky building in x, y, z on an area of size*size and height maxHeight
-func blockyBuilding(x, y, z, dx, dz, maxHeight):
+func blockyBuilding(x, y, z, dx, dz):
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz)
+	addCube(x, y, z, dx, 0.005, dz, "blocky" + str(blockyBuildingCount))
 		
 	##First block
 	#Base
@@ -134,50 +146,44 @@ func blockyBuilding(x, y, z, dx, dz, maxHeight):
 	#Offset from the middle
 	var xOffset = rand_range(0, 0.4 * dx)
 	var zOffset = rand_range(0, 0.4 * dz)
-	addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase)
 	
-	##Rest of the blocks
-	#Vector to store the new block positions so they don't overlap
-	var nodes = []
-	var h = maxHeight
+	#Height
+	var maxHeight = 0
 	
-	#Stop when we want to put a building of height less than the 20% of the original height
-	while(h > 0.2 * maxHeight):
+	if randi() % 2 == 0:
+		maxHeight = min(dxBase, dzBase) * 5
 		
-		#The height for the next "addition" must be lower than the previous one
-		h = rand_range(0.5 * h, h)
-		
-		#Creates the new cube outside the big building, its size cannot be lower than the 25% of the original size
-		#and it cannot leave the parcel
-		var dxLocal = rand_range(0.25 * dx, min(xOffset, zOffset)) - 0.01
-		var dzLocal = rand_range(0.25 * dz, min(xOffset, zOffset)) - 0.01
-		
-		#This coordinates will put the new buildings in the corner of the big one
-		var xLocal = x + xOffset - dxBase - dxLocal
-		var zLocal = z + zOffset - dzBase - dzLocal
+	else:
+		maxHeight = max(dxBase, dzBase) * 5
 
-		#Now we calculate the final position of the new building, either move in the X side or the Z
-		var toggleAxis = randi() % 2
-		xLocal = xLocal + rand_range(dxLocal*2, dxBase*2) * toggleAxis
-		zLocal = zLocal + rand_range(dzLocal*2, dzBase*2) * ((toggleAxis + 1) % 2)
-
-		#Does it intersect with a previous node? If it does don't build it.
-		#Note that I will allow lower but wider buildings to spawn even thoguh another building is already there.
-		#That leads to some kind of towers.
-		var collision = false
+	#This will set if the building has 4, 3 or one tower
+	var shape = randi() % 10
+	var xLocal = x + xOffset
+	var zLocal = z + zOffset
+	
+	if shape == 0 or shape == 1: #20% of 4 towers
 		
-		for node in nodes:
-			if(node[4] == 1): #X axis
-				if(((xLocal - dxLocal >= node[0] - node[2]) and (xLocal - dxLocal <= node[0] + node[2])) or ((xLocal + dxLocal >= node[0] - node[2]) and (xLocal + dxLocal <= node[0] + node[2]))):
-						collision = true
-			else:
-				if(((zLocal - dzLocal >= node[1] - node[3]) and (zLocal - dzLocal <= node[1] + node[3])) or ((zLocal + dzLocal >= node[1] - node[3]) and (zLocal + dzLocal <= node[1] + node[3]))):
-					collision = true
-
-		if not collision:
-			addCube(xLocal, y, zLocal, dxLocal, h, dzLocal)
-			nodes.push_back([xLocal, zLocal, dxLocal, dzLocal, toggleAxis])
-				
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, "blocky" + str(blockyBuildingCount))
+		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, "blocky" + str(blockyBuildingCount))
+		h = rand_range(0.7 * h, 0.9 * h)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, "blocky" + str(blockyBuildingCount))
+		h = rand_range(0.7 * h, 0.9 * h)
+		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, "blocky" + str(blockyBuildingCount))
+		
+	elif shape == 2: #10% of 3 towers
+	
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, "blocky" + str(blockyBuildingCount))
+		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, "blocky" + str(blockyBuildingCount))
+		h = rand_range(0.7 * h, 0.9 * h)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, "blocky" + str(blockyBuildingCount))
+		h = rand_range(0.7 * h, 0.9 * h)
+		
+	else: #70% of regular building
+	
+		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, "blocky" + str(blockyBuildingCount))
+	
 	##Add palms
 	var palmNumber = randi() % 7
 	
@@ -186,12 +192,9 @@ func blockyBuilding(x, y, z, dx, dz, maxHeight):
 		#Corner of the building + offset
 		var xLocal = x + xOffset - dxBase - 0.05
 		var zLocal = z + zOffset - dzBase - 0.05
-		
-		#Distance from the corner of the building to the corner of the base
-		var dist = sqrt(pow(xLocal - x + dxBase, 2) + pow(zLocal - z + dzBase,2))
-		
-		xLocal -= rand_range(0, dist)
-		zLocal -= rand_range(0, dist)
+				
+		xLocal -= rand_range(0.01, xOffset*2)
+		zLocal -= rand_range(0.01, zOffset*2)
 		
 		#Add it to the scene
 		var p = palm.instance()
@@ -205,11 +208,13 @@ func blockyBuilding(x, y, z, dx, dz, maxHeight):
 		
 		#Resize
 		var scale = get_node(name).get_scale()
-		var modifier = rand_range(0.1, 1)
+		var modifier = rand_range(1, 6)
 		get_node(name).set_scale(scale * modifier)
 		
 		#Rotate
 		get_node(name).set_rotation(Vector3(deg2rad(90), 0, deg2rad(rand_range(0, 180))))
+	
+	blockyBuildingCount += 1
 
 #Adds a house in x, y, z on an area of size*size
 func house(x, y, z, dx, dz):

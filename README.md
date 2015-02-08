@@ -11,7 +11,7 @@ Goals
 * Get a cube with transparency to work. ✔
 * Creation of the buildings.
   * Block buildings. ✔
-    * Maybe add some palms. ✔ [Video](http://youtu.be/ZoA9LGPK1aw)
+    * Maybe add some palms. ✔ ~~[Video](http://youtu.be/ZoA9LGPK1aw)~~ [New video](http://youtu.be/KuFNl1qacbk)
   * Regular buildings.
   * Small houses.
 * Division of the terrain using Voronoi Diagrams.
