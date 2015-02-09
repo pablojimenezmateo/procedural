@@ -51,11 +51,11 @@ func _ready():
 #				#addBunchOfBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 #				print("p")
 #	addHouse(0, 0, 0, 1, 0.5)
-#	addBlockyBuilding(0, 0, 0, 1, 1)
-#	addPiramidalBuilding(0, 0, 0, 1, 1)
-#	addPiramidalBuilding(0, 0, 0, 1, 1)
+	addBlockyBuilding(0, 0, 0, 1, 1)
+	addPiramidalBuilding(0, 0, 4, 1, 1)
+	#addPiramidalBuilding(0, 0, 0, 1, 1)
 #	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
-#	addBunchOfBuildings(0, 0, 0, 1, 1, 0.80, 1.40)
+	addBunchOfBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
 #	get_node("blocky0").set_rotation(Vector3(0, PI/3, 0))
 	
 
