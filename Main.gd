@@ -19,7 +19,13 @@ var piramidalBuildingCount = 0
 
 var bunchOfBuildingsCount = 0
 
-var drawStructure = true
+##Flags
+#When enabled, the structure of the buildings is drawn
+var drawStructure = false
+
+#When enabled, palms, antennas and some other details are added
+var drawDetails = true
+
 
 func _ready():
 
@@ -40,22 +46,22 @@ func _ready():
 #	for i in range(5):
 #		for j in range(5):
 #			addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#	for i in range(3):
-#		for j in range(3):
-#			var toggle = randi() % 3
-#			if toggle == 0:
-#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 1:
-#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 2:
-#				#addBunchOfBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
-#				print("p")
+	for i in range(3):
+		for j in range(3):
+			var toggle = randi() % 3
+			if toggle == 0:
+				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 1:
+				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 2:
+				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+
 #	addHouse(0, 0, 0, 1, 0.5)
-	addBlockyBuilding(0, 0, 0, 1, 1)
-	addPiramidalBuilding(0, 0, 4, 1, 1)
+#	addBlockyBuilding(0, 0, 0, 1, 1)
+#	addPiramidalBuilding(0, 0, 4, 1, 1)
 	#addPiramidalBuilding(0, 0, 0, 1, 1)
 #	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
-	addBunchOfBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
+#	addResidentialBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
 #	get_node("blocky0").set_rotation(Vector3(0, PI/3, 0))
 	
 
@@ -126,7 +132,7 @@ func _input(event):
 		#Move it back
 		camera.set_translation(trans)
 
-#Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz
+#Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz. Is structure is set, it draws the structure of the cube.
 func addCube(x, y, z, dx, dy, dz, id, structure):
 
 	print("Creating cube")
@@ -184,7 +190,7 @@ func addCube(x, y, z, dx, dy, dz, id, structure):
 		white.set_scale(Vector3(dx, heightLeft, dz))
 		white.set_translation(Vector3(x, 0 + 0.027/2 + 0.003/2 + accumHeight, z))
 		
-		print("Cube count: ", cubeCount)
+	print("Cube count: ", cubeCount)
 
 
 #Adds a blocky building in x, y, z on an area of size*size
@@ -247,34 +253,35 @@ func addBlockyBuilding(x, y, z, dx, dz):
 		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, buildingName, drawStructure)
 	
 	##Add palms
-	var palmNumber = randi() % 7
-	
-	for i in range(palmNumber):
-	
-		#Corner of the building + offset
-		var xLocal = x + xOffset - dxBase - 0.05
-		var zLocal = z + zOffset - dzBase - 0.05
-				
-		xLocal -= rand_range(0.01, xOffset*2)
-		zLocal -= rand_range(0.01, zOffset*2)
+	if drawDetails:
+		var palmNumber = randi() % 7
 		
-		#Add it to the scene
-		var p = palm.instance()
-		var palmName = "p" + str(palmCount)
-		palmCount += 1
-		p.set_name(palmName)
-		get_node(buildingName).add_child(p)
+		for i in range(palmNumber):
 		
-		#Move, and make sure it is above the ground
-		get_node(buildingName).get_node(palmName).set_translation(Vector3(xLocal, 0, zLocal))
-		
-		#Resize
-		var scale = get_node(buildingName).get_node(palmName).get_scale()
-		var modifier = rand_range(1, 6)
-		get_node(buildingName).get_node(palmName).set_scale(scale * modifier)
-		
-		#Rotate
-		get_node(buildingName).get_node(palmName).set_rotation(Vector3(deg2rad(90), 0, deg2rad(rand_range(0, 180))))
+			#Corner of the building + offset
+			var xLocal = x + xOffset - dxBase - 0.05
+			var zLocal = z + zOffset - dzBase - 0.05
+					
+			xLocal -= rand_range(0.01, xOffset*2)
+			zLocal -= rand_range(0.01, zOffset*2)
+			
+			#Add it to the scene
+			var p = palm.instance()
+			var palmName = "p" + str(palmCount)
+			palmCount += 1
+			p.set_name(palmName)
+			get_node(buildingName).add_child(p)
+			
+			#Move, and make sure it is above the ground
+			get_node(buildingName).get_node(palmName).set_translation(Vector3(xLocal, 0, zLocal))
+			
+			#Resize
+			var scale = get_node(buildingName).get_node(palmName).get_scale()
+			var modifier = rand_range(1, 6)
+			get_node(buildingName).get_node(palmName).set_scale(scale * modifier)
+			
+			#Rotate
+			get_node(buildingName).get_node(palmName).set_rotation(Vector3(deg2rad(90), 0, deg2rad(rand_range(0, 180))))
 	
 	blockyBuildingCount += 1
 
@@ -326,9 +333,13 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 		yPos += 2* heights[i]
 		dxBase *= rand_range(0.6, 0.8)
 		dzBase *= rand_range(0.6, 0.8)
+		
+	##Add benches
+	if drawDetails:
+		
 
-#Adds a bunch of building in x, y, z on an area of size * size
-func addBunchOfBuildings(x, y, z, dx, dz, minHeight, maxHeight):
+#Adds residential buildings in x, y, z on an area of size * size with height between minHeight and maxHeight
+func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 
 	var buildingName = "bunch" + str(houseCount)
 
