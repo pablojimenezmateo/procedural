@@ -22,7 +22,7 @@ var residentialBuildingsCount = 0
 
 ##Flags
 #When enabled, the structure of the buildings is drawn
-var drawStructure = false
+var drawStructure = true
 
 #When enabled, palms, antennas and some other details are added
 var drawDetails = true
@@ -44,19 +44,19 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-	for i in range(10):
-		for j in range(10):
-			var toggle = randi() % 3
-			if toggle == 0:
-				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 1:
-				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 2:
-				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+#	for i in range(3):
+#		for j in range(3):
+#			var toggle = randi() % 3
+#			if toggle == 0:
+#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 1:
+#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 2:
+#				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 
 #	addHouse(0, 0, 0, 1, 0.5)
-	#addBlockyBuilding(0, 0, 0, 1, 1)
-#	addPiramidalBuilding(0, 0, 4, 1, 1)
+#	addBlockyBuilding(0, 0, 0, 1, 1)
+	addPiramidalBuilding(0, 0, 4, 1, 1)
 	#addPiramidalBuilding(0, 0, 0, 1, 1)
 #	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
 #	addResidentialBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
@@ -157,37 +157,43 @@ func addCube(x, y, z, dx, dy, dz, id, structure):
 		cubeCount += 1
 		
 	else:
-	
+			
+		#Add a big transparent cube and then the structure
+		#Windows
+		var trans = cubeTransparent.instance()
+		
+		trans.set_translation(Vector3(x, y + dy, z))
+		trans.set_scale(Vector3(dx, dy, dz))
+		
+		get_node(id).add_child(trans)
+		
+		cubeCount += 1
+		
+		#The framing
 		var heightLeft = dy * 2
 		var accumHeight = 0
 		
 		while(heightLeft > 0.03):
 		
-			##Instanciate the .res
-			#Windows
-			var trans = cubeTransparent.instance()
-			trans.set_scale(Vector3(dx, 0.027, dz))
-			trans.set_translation(Vector3(x, y + 0.027/2 + accumHeight, z))
-			
+			##Instanciate the .res		
 			#Floor framing
 			var white = cubeWhite.instance()
 			white.set_scale(Vector3(dx, 0.003, dz))
-			white.set_translation(Vector3(x, y + 0.027/2 + 0.003/2 + accumHeight, z))
+			white.set_translation(Vector3(x, y + 0.03/2 + accumHeight, z))
 			
 			#Add to node
-			get_node(id).add_child(trans)
 			get_node(id).add_child(white)
 
 			heightLeft -= 0.03
 			accumHeight += 0.03
 			
 			#Keep the count
-			cubeCount += 2
+			cubeCount += 1
 		
 		#The rest
-		var white = cubeWhite.instance()
-		white.set_scale(Vector3(dx, heightLeft, dz))
-		white.set_translation(Vector3(x, 0 + 0.027/2 + 0.003/2 + accumHeight, z))
+#		var white = cubeWhite.instance()
+#		white.set_scale(Vector3(dx, heightLeft, dz))
+#		white.set_translation(Vector3(x, 0 + 0.027/2 + 0.003/2 + accumHeight, z))
 		
 	print("Cube count: ", cubeCount)
 
@@ -322,7 +328,7 @@ func addBlockyBuilding(x, y, z, dx, dz):
 				
 				#Resize
 				var scale = t.get_scale()
-				var modifier = rand_range(1, 2)
+				var modifier = rand_range(2, 4)
 				t.set_scale(scale * modifier)
 				
 				#Rotate
