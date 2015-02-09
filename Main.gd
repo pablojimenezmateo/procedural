@@ -2,7 +2,9 @@ extends Spatial
 
 #1 meter = 0.01 units
 
-var cube = preload("res://resources/cube.res")
+var cubeWithBorders = preload("res://resources/cubeWithBorders.res")
+var cubeWhite = preload("res://resources/cubeWhite.res")
+var cubeTransparent = preload("res://resources/cubeTransparent.res")
 var ground = preload("res://resources/ground.res")
 var palm = preload("res://resources/palm.res")
 
@@ -16,6 +18,8 @@ var houseCount = 0
 var piramidalBuildingCount = 0
 
 var bunchOfBuildingsCount = 0
+
+var drawStructure = true
 
 func _ready():
 
@@ -33,20 +37,22 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-#	for i in range(10):
-#		for j in range(10):
+#	for i in range(5):
+#		for j in range(5):
 #			addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-	for i in range(10):
-		for j in range(10):
-			var toggle = randi() % 3
-			if toggle == 0:
-				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 1:
-				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 2:
-				addBunchOfBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+#	for i in range(3):
+#		for j in range(3):
+#			var toggle = randi() % 3
+#			if toggle == 0:
+#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 1:
+#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 2:
+#				#addBunchOfBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+#				print("p")
 #	addHouse(0, 0, 0, 1, 0.5)
-#	addBlockyBuilding(0.7, 0, 0, 1, 1)
+#	addBlockyBuilding(0, 0, 0, 1, 1)
+#	addPiramidalBuilding(0, 0, 0, 1, 1)
 #	addPiramidalBuilding(0, 0, 0, 1, 1)
 #	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
 #	addBunchOfBuildings(0, 0, 0, 1, 1, 0.80, 1.40)
@@ -86,7 +92,6 @@ func _input(event):
 
 	var view_sensitivity = 0.003
 	var camera = get_node("ghost_cam")
-	var cube = get_node("TestCube")
 	
 	if (event.type == InputEvent.MOUSE_MOTION):
 	
@@ -122,29 +127,65 @@ func _input(event):
 		camera.set_translation(trans)
 
 #Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz
-func addCube(x, y, z, dx, dy, dz, id):
+func addCube(x, y, z, dx, dy, dz, id, structure):
 
 	print("Creating cube")
-	print("Cube count: ", cubeCount)
 	
-	#Instanciate the .res
-	var b = cube.instance()
+	if not structure:
+		#Instanciate the .res
+		var b = cubeWithBorders.instance()
+		
+		#Set a name so we can work with it later
+		var currentName = "c" + str(cubeCount)
+		b.set_name(currentName)
+		
+		#Move, and make sure it is above the ground
+		b.set_translation(Vector3(x, y + dy, z))
+		
+		#Resize
+		b.set_scale(Vector3(dx, dy, dz))
+		
+		#Add to node
+		get_node(id).add_child(b)
+		
+		#Keep the count
+		cubeCount += 1
+		
+	else:
 	
-	#Set a name so we can work with it later
-	var currentName = "c" + str(cubeCount)
-	b.set_name(currentName)
-	
-	#Add to node
-	get_node(id).add_child(b)
-	
-	#Move, and make sure it is above the ground
-	get_node(id).get_node(currentName).set_translation(Vector3(x, y + dy, z))
-	
-	#Resize
-	get_node(id).get_node(currentName).set_scale(Vector3(dx, dy, dz))
-	
-	#Keep the count
-	cubeCount += 1
+		var heightLeft = dy * 2
+		var accumHeight = 0
+		
+		while(heightLeft > 0.03):
+		
+			##Instanciate the .res
+			#Windows
+			var trans = cubeTransparent.instance()
+			trans.set_scale(Vector3(dx, 0.027, dz))
+			trans.set_translation(Vector3(x, y + 0.027/2 + accumHeight, z))
+			
+			#Floor framing
+			var white = cubeWhite.instance()
+			white.set_scale(Vector3(dx, 0.003, dz))
+			white.set_translation(Vector3(x, y + 0.027/2 + 0.003/2 + accumHeight, z))
+			
+			#Add to node
+			get_node(id).add_child(trans)
+			get_node(id).add_child(white)
+
+			heightLeft -= 0.03
+			accumHeight += 0.03
+			
+			#Keep the count
+			cubeCount += 2
+		
+		#The rest
+		var white = cubeWhite.instance()
+		white.set_scale(Vector3(dx, heightLeft, dz))
+		white.set_translation(Vector3(x, 0 + 0.027/2 + 0.003/2 + accumHeight, z))
+		
+		print("Cube count: ", cubeCount)
+
 
 #Adds a blocky building in x, y, z on an area of size*size
 func addBlockyBuilding(x, y, z, dx, dz):
@@ -157,7 +198,7 @@ func addBlockyBuilding(x, y, z, dx, dz):
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName)
+	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
 	
 	##First block
 	#Base
@@ -184,26 +225,26 @@ func addBlockyBuilding(x, y, z, dx, dz):
 	
 	if shape == 0 or shape == 1: #20% of 4 towers
 		
-		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingName)
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingName, drawStructure)
 		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
-		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingName)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName)
+		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
 		
 	elif shape == 2: #10% of 3 towers
 	
-		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingName)
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingName, drawStructure)
 		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
-		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingName)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
 		h = rand_range(0.7 * h, 0.9 * h)
 		
 	else: #70% of regular building
 	
-		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, buildingName)
+		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, buildingName, drawStructure)
 	
 	##Add palms
 	var palmNumber = randi() % 7
@@ -248,7 +289,7 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName)
+	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
 	
 	##Bottom block
 	#Base
@@ -281,7 +322,7 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 	#Build the blocks
 	var yPos = 0
 	for i in range(blocks):
-		addCube(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, buildingName)
+		addCube(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, buildingName, drawStructure)
 		yPos += 2* heights[i]
 		dxBase *= rand_range(0.6, 0.8)
 		dzBase *= rand_range(0.6, 0.8)
@@ -297,7 +338,7 @@ func addBunchOfBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName)
+	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
 	
 	##Add row of buildings in Z axis
 	#Widths
@@ -315,7 +356,7 @@ func addBunchOfBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x + dx - 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, rand_range(minHeight, maxHeight), width, buildingName)
+		addCube(x + dx - 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, rand_range(minHeight, maxHeight), width, buildingName, drawStructure)
 		acumWidth += width * 2
 	
 	##Add row of buildings in the other side of the Z axis
@@ -334,7 +375,7 @@ func addBunchOfBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x - dx + 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, rand_range(minHeight, maxHeight), width, buildingName)
+		addCube(x - dx + 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, rand_range(minHeight, maxHeight), width, buildingName, drawStructure)
 		acumWidth += width * 2
 		
 	##Add row of buildings in the X axis
@@ -353,7 +394,7 @@ func addBunchOfBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z + dz - 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName)
+		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z + dz - 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName, drawStructure)
 		acumWidth += width * 2
 		
 	##Add the other row of buildings in the X axis
@@ -372,7 +413,7 @@ func addBunchOfBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z - dz + 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName)
+		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z - dz + 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName, drawStructure)
 		acumWidth += width * 2
 	
 #Adds a house in x, y, z on an area of size*size
@@ -386,7 +427,7 @@ func addHouse(x, y, z, dx, dz):
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName)
+	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
 	
 	##First block
 	#Base
@@ -397,6 +438,6 @@ func addHouse(x, y, z, dx, dz):
 	var xOffset = rand_range(0, 0.4 * dx)
 	var zOffset = rand_range(0, 0.4 * dz)
 	
-	addCube(x + xOffset, y, z + zOffset, dxBase, 0.06, dzBase, buildingName)
+	addCube(x + xOffset, y, z + zOffset, dxBase, 0.06, dzBase, buildingName, drawStructure)
 	
 	houseCount += 1
