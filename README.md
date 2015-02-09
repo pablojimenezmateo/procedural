@@ -12,6 +12,7 @@ Goals
 * Creation of the buildings.
   * Block buildings. ✔
     * Maybe add some palms. ✔ ~~[Video](http://youtu.be/ZoA9LGPK1aw)~~ [New video](http://youtu.be/KuFNl1qacbk)
+    * Add trees. ✔ [Video](http://youtu.be/gRwZTo4Th4g)
     * Add floor framings. [Video](http://youtu.be/Sr2Ef5iaPls)
       * Must work out the memory problem.
   * Piramidal buildings. [Video](http://youtu.be/2TflFoWQHJs)
@@ -28,5 +29,5 @@ Goals
 License
 --------
 
-This program is licensed under Creative commons Attribution 3.0 Unported, more info : 
+This program is licensed under Creative Commons Attribution 3.0 Unported, more info : 
 http://creativecommons.org/licenses/by/3.0/deed.en_US

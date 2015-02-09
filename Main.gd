@@ -7,17 +7,18 @@ var cubeWhite = preload("res://resources/cubeWhite.res")
 var cubeTransparent = preload("res://resources/cubeTransparent.res")
 var ground = preload("res://resources/ground.res")
 var palm = preload("res://resources/palm.res")
+var tree = preload("res://resources/tree.res")
 
 var cubeCount = 0
+#Details
 var palmCount = 0
+var treeCount = 0
 
+#Buildings
 var blockyBuildingCount = 0
-
 var houseCount = 0
-
 var piramidalBuildingCount = 0
-
-var bunchOfBuildingsCount = 0
+var residentialBuildingsCount = 0
 
 ##Flags
 #When enabled, the structure of the buildings is drawn
@@ -43,11 +44,8 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-#	for i in range(5):
-#		for j in range(5):
-#			addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-	for i in range(3):
-		for j in range(3):
+	for i in range(10):
+		for j in range(10):
 			var toggle = randi() % 3
 			if toggle == 0:
 				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
@@ -57,12 +55,13 @@ func _ready():
 				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 
 #	addHouse(0, 0, 0, 1, 0.5)
-#	addBlockyBuilding(0, 0, 0, 1, 1)
+	#addBlockyBuilding(0, 0, 0, 1, 1)
 #	addPiramidalBuilding(0, 0, 4, 1, 1)
 	#addPiramidalBuilding(0, 0, 0, 1, 1)
 #	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
 #	addResidentialBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
 #	get_node("blocky0").set_rotation(Vector3(0, PI/3, 0))
+
 	
 
 #This is used to translate the camera around
@@ -252,36 +251,85 @@ func addBlockyBuilding(x, y, z, dx, dz):
 	
 		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, buildingName, drawStructure)
 	
-	##Add palms
 	if drawDetails:
-		var palmNumber = randi() % 7
 		
-		for i in range(palmNumber):
+		#Palms or trees
+		var type = randi() % 2
+		var both = randi() % 10
+	
+		if type == 0 or both == 0:
+			##Add palms
+			var palmNumber = randi() % 7
+			
+			for i in range(palmNumber):
+			
+				#Corner of the building + offset
+				var xLocal = x + xOffset - dxBase - 0.05
+				var zLocal = z + zOffset - dzBase - 0.05
+						
+				xLocal -= rand_range(0.01, xOffset*2)
+				zLocal -= rand_range(0.01, zOffset*2)
+				
+				#Add it to the scene
+				var p = palm.instance()
+				var palmName = "p" + str(palmCount)
+				palmCount += 1
+				p.set_name(palmName)
+	
+				#Move, and make sure it is above the ground
+				p.set_translation(Vector3(xLocal, 0.01, zLocal))
+				
+				#Resize
+				var scale = p.get_scale()
+				var modifier = rand_range(1, 3)
+				p.set_scale(scale / modifier)
+				
+				#Rotate
+				p.set_rotation(Vector3(PI/2, 0, rand_range(0, PI)))
+				
+				#Add it
+				get_node(buildingName).add_child(p)
 		
-			#Corner of the building + offset
-			var xLocal = x + xOffset - dxBase - 0.05
-			var zLocal = z + zOffset - dzBase - 0.05
-					
-			xLocal -= rand_range(0.01, xOffset*2)
-			zLocal -= rand_range(0.01, zOffset*2)
+		elif type == 1 or both == 0:
+		
+			##Add trees
+			var treeNumber = randi() % 3
 			
-			#Add it to the scene
-			var p = palm.instance()
-			var palmName = "p" + str(palmCount)
-			palmCount += 1
-			p.set_name(palmName)
-			get_node(buildingName).add_child(p)
+			#Hide leaves?
+			var leaves = randi() % 5
 			
-			#Move, and make sure it is above the ground
-			get_node(buildingName).get_node(palmName).set_translation(Vector3(xLocal, 0, zLocal))
+			for i in range(treeNumber):
 			
-			#Resize
-			var scale = get_node(buildingName).get_node(palmName).get_scale()
-			var modifier = rand_range(1, 6)
-			get_node(buildingName).get_node(palmName).set_scale(scale * modifier)
-			
-			#Rotate
-			get_node(buildingName).get_node(palmName).set_rotation(Vector3(deg2rad(90), 0, deg2rad(rand_range(0, 180))))
+				#Corner of the building + offset
+				var xLocal = x + xOffset - dxBase - 0.05
+				var zLocal = z + zOffset - dzBase - 0.05
+						
+				xLocal -= rand_range(0.01, xOffset*2)
+				zLocal -= rand_range(0.01, zOffset*2)
+				
+				#Add it to the scene
+				var t = tree.instance()
+				var treeName = "t" + str(treeCount)
+				treeCount += 1
+				t.set_name(treeName)
+				
+				#Remove leaves 20% of the times
+				if leaves == 0:
+						t.get_child(1).set("geometry/visible", false)
+	
+				#Move, and make sure it is above the ground
+				t.set_translation(Vector3(xLocal, 0.01, zLocal))
+				
+				#Resize
+				var scale = t.get_scale()
+				var modifier = rand_range(1, 2)
+				t.set_scale(scale * modifier)
+				
+				#Rotate
+				t.set_rotation(Vector3(0, rand_range(0, PI), 0))
+				
+				#Add it
+				get_node(buildingName).add_child(t)
 	
 	blockyBuildingCount += 1
 
@@ -335,13 +383,13 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 		dzBase *= rand_range(0.6, 0.8)
 		
 	##Add benches
-	if drawDetails:
+	#if drawDetails:
 		
 
 #Adds residential buildings in x, y, z on an area of size * size with height between minHeight and maxHeight
 func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 
-	var buildingName = "bunch" + str(houseCount)
+	var buildingName = "bunch" + str(residentialBuildingsCount)
 
 	#Create a node building that will contain all blocks
 	var node = Spatial.new()
@@ -426,6 +474,8 @@ func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	for width in widths:
 		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z - dz + 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName, drawStructure)
 		acumWidth += width * 2
+		
+	residentialBuildingsCount += 1
 	
 #Adds a house in x, y, z on an area of size*size
 func addHouse(x, y, z, dx, dz):
