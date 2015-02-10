@@ -14,7 +14,8 @@ Goals
     * Maybe add some palms. ✔ ~~[Video](http://youtu.be/ZoA9LGPK1aw)~~ [New video](http://youtu.be/KuFNl1qacbk)
     * Add trees. ✔ [Video](http://youtu.be/gRwZTo4Th4g)
     * Add floor framings. ✔ [Video](http://youtu.be/Sr2Ef5iaPls)
-      * Must work out the memory problem.
+      * Must work out the memory problem. ✔ (Wasn't a memory problem, a released fixed it)
+      * Must implement LOD for this to work properly.
   * Piramidal buildings. ✔ [Video](http://youtu.be/2TflFoWQHJs)
     * Maybe add some details.
   * Residential buildings. ✔ [Video](http://youtu.be/bdShgGLUZZk)
