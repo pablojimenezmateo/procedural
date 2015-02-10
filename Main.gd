@@ -166,8 +166,6 @@ func addCube(x, y, z, dx, dy, dz, id, structure):
 		trans.set_scale(Vector3(dx, dy, dz))
 		
 		get_node(id).add_child(trans)
-		
-		
 		cubeCount += 1
 		
 		#The framing
@@ -191,11 +189,14 @@ func addCube(x, y, z, dx, dy, dz, id, structure):
 			#Keep the count
 			cubeCount += 1
 		
-		#The rest
-#		var white = cubeWhite.instance()
-#		white.set_scale(Vector3(dx, heightLeft, dz))
-#		white.set_translation(Vector3(x, 0 + 0.027/2 + 0.003/2 + accumHeight, z))
+		#The a little top
+		var white = cubeWhite.instance()
+		white.set_scale(Vector3(dx, 0.003, dz))
+		white.set_translation(Vector3(x, y + dy*2.0, z))
 		
+		get_node(id).add_child(white)
+		cubeCount += 1
+	
 	print("Cube count: ", cubeCount)
 
 
