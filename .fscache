@@ -1,10 +1,11 @@
-::res://::1423522891
-Main.gd::GDScript::1423522891::
-Main.scn::PackedScene::1423522273::
+::res://::1423599547
+Main.gd::GDScript::1423599547::
+Main.scn::PackedScene::1423599547::
 icon.png::ImageTexture::1423051284::
-::res://resources::1423522150
-cubeTransparent.res::PackedScene::1423522150::
-cubeWhite.res::PackedScene::1423521523::
+::res://resources::1423599577
+bench.res::PackedScene::1423590385::scene_3d<>../../../Downloads/bench-modified.dae<>4f9f8d046b77fd6a33a68b020c1a551c<>1423589860
+cubeTransparent.res::PackedScene::1423599577::
+cubeWhite.res::PackedScene::1423599565::
 cubeWithBorders.res::PackedScene::1423478693::
 ground.res::PackedScene::1423511246::scene_3d<>resources/floor.dae<>30b978926660de126e38117b13a01e57<>0
 hydrant.res::PackedScene::1423510017::scene_3d<>resources/hydrant.dae<>44d1fe109912ac833107f8c316bb2778<>0

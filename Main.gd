@@ -44,19 +44,19 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-#	for i in range(3):
-#		for j in range(3):
-#			var toggle = randi() % 3
-#			if toggle == 0:
-#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 1:
-#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 2:
-#				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+	for i in range(10):
+		for j in range(10):
+			var toggle = randi() % 3
+			if toggle == 0:
+				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 1:
+				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 2:
+				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 
 #	addHouse(0, 0, 0, 1, 0.5)
 #	addBlockyBuilding(0, 0, 0, 1, 1)
-	addPiramidalBuilding(0, 0, 4, 1, 1)
+#	addPiramidalBuilding(0, 0, 4, 1, 1)
 	#addPiramidalBuilding(0, 0, 0, 1, 1)
 #	get_tree().call_group(0,"blocky0","set_rotation", Vector3(0, PI/2, 0))
 #	addResidentialBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
