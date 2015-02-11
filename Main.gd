@@ -27,7 +27,6 @@ var drawStructure = true
 #When enabled, palms, antennas and some other details are added
 var drawDetails = true
 
-
 func _ready():
 
 	#The initial seed
@@ -44,8 +43,8 @@ func _ready():
 	add_child(g)
 	
 	#Trials
-	for i in range(3):
-		for j in range(3):
+	for i in range(10):
+		for j in range(10):
 			var toggle = randi() % 3
 			if toggle == 0:
 				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
@@ -180,6 +179,9 @@ func addCube(x, y, z, dx, dy, dz, id, structure):
 			white.set_scale(Vector3(dx, 0.003, dz))
 			white.set_translation(Vector3(x, y + 0.03/2 + accumHeight, z))
 			
+			#Set a range to be displayed, this hugely improves performance
+			white.set("geometry/range_end", 8)
+			
 			#Add to node
 			get_node(id).add_child(white)
 
@@ -193,7 +195,7 @@ func addCube(x, y, z, dx, dy, dz, id, structure):
 		var white = cubeWhite.instance()
 		white.set_scale(Vector3(dx, 0.003, dz))
 		white.set_translation(Vector3(x, y + dy*2.0, z))
-		
+		white.set("geometry/range_end", 8)
 		get_node(id).add_child(white)
 		cubeCount += 1
 	
