@@ -1,15 +1,25 @@
 extends Spatial
 
 #1 meter = 0.01 units
-#
-#var cubeWithBorders = preload("res://resources/cubeWithBorders.res")
-#var cubeWhite = preload("res://resources/cubeWhite.res")
-#var cubeTransparent = preload("res://resources/cubeTransparent.res")
-#var ground = preload("res://resources/ground.res")
+
+##Flags, you can play with them
+#When enabled, the structure of the buildings is drawn
+var drawStructure = false
+
+#When enabled, palms, antennas and some other details are added
+var drawDetails = true
+
+#Building color
+var buildingColor = Color(1, 1, 1, 0.5)
+
+#Siluete color
+var silueteColor = Color(1, 1, 1)
+
+##Resources for details
 var palm = preload("res://resources/palm.res")
 var tree = preload("res://resources/tree.res")
 
-var cubeCount = 0
+##Counters
 #Details
 var palmCount = 0
 var treeCount = 0
@@ -20,40 +30,29 @@ var houseCount = 0
 var piramidalBuildingCount = 0
 var residentialBuildingsCount = 0
 
-##Flags
-#When enabled, the structure of the buildings is drawn
-var drawStructure = false
-
-#When enabled, palms, antennas and some other details are added
-var drawDetails = true
-
+#Actual code
 func _ready():
 
 	#The initial seed
 	#rand_seed(42)
 	randomize()
 	
-#	#Add ground
-#	var g = ground.instance()
-#	g.set_name("ground")
-#	add_child(g)
-	
-#	#Trials
-#	for i in range(10):
-#		for j in range(10):
-#			var toggle = randi() % 3
-#			if toggle == 0:
-#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 1:
-#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 2:
-#				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+	#Trials
+	for i in range(10):
+		for j in range(10):
+			var toggle = randi() % 3
+			if toggle == 0:
+				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 1:
+				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 2:
+				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 
 #	addHouse(0, 0, 0, 1, 0.5)
 #
-	for i in range(10):
-		for j in range(10):
-			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#	for i in range(10):
+#		for j in range(10):
+#			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
 #	addBlockyBuilding(0, 0, 0, 1, 1)
 #	addPiramidalBuilding(0, 0, 4, 1, 1)
 #	addPiramidalBuilding(0, 0, 0, 1, 1)
@@ -132,8 +131,8 @@ func _ready():
 #		cubeCount += 1
 #
 #	print("Cube count: ", cubeCount)
-#
-#Appends a cubes to an existing Surfacetool
+
+#Appends a cube to an existing Surfacetool
 func addCube(x, y, z, dx, dy, dz, color, surface):
 	
 	#This allows to use RGB colors instead of images. Spooner is a genius!
@@ -216,7 +215,7 @@ func addCube(x, y, z, dx, dy, dz, color, surface):
 	surface.add_vertex(corners[4])
 	surface.add_vertex(corners[7])
 
-#Adds a siluete as a child of this node
+#Appends a siluete on an existing surface SurfaceTool
 func addSiluete(x, y, z, dx, dy, dz, color, surface):
 	
 	#This allows to use RGB colors instead of images
@@ -283,13 +282,6 @@ func addSiluete(x, y, z, dx, dy, dz, color, surface):
 	surface.add_vertex(corners[7])
 	surface.add_vertex(corners[4])
 
-#	#Get the mesh
-#	var mesh = surface.commit()
-#
-#	#Set the mesh
-#	mesh_child.set_mesh(mesh)
-#	add_child(mesh_child)
-	
 #Adds a blocky building in x, y, z on an area of size*size
 func addBlockyBuilding(x, y, z, dx, dz):
 
@@ -309,8 +301,8 @@ func addBlockyBuilding(x, y, z, dx, dz):
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, Color(1, 1, 1, 0.5), surface)
-	addSiluete(x, y, z, dx, 0.005, dz, Color(1, 1, 1), surface_siluete)
+	addCube(x, y, z, dx, 0.005, dz, buildingColor, surface)
+	addSiluete(x, y, z, dx, 0.005, dz, silueteColor, surface_siluete)
 	
 	##First block
 	#Base
@@ -337,34 +329,34 @@ func addBlockyBuilding(x, y, z, dx, dz):
 	
 	if shape == 0 or shape == 1: #20% of 4 towers
 		
-		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, silueteColor, surface_siluete)
 		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
-		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, silueteColor, surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, silueteColor, surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, silueteColor, surface_siluete)
 		
 	elif shape == 2: #10% of 3 towers
 	
-		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, silueteColor, surface_siluete)
 		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
-		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, silueteColor, surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
-		addSiluete(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingColor, surface)
+		addSiluete(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, silueteColor, surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
 		
 	else: #70% of regular building
 	
-		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, Color(1, 1, 1, 0.5), surface)
-		addSiluete(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, Color(1, 1, 1), surface_siluete)
+		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, buildingColor, surface)
+		addSiluete(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, silueteColor, surface_siluete)
 	
 	if drawDetails:
 		
@@ -461,13 +453,22 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 
 	var buildingName = "piramidal" + str(houseCount)
 
-	#Create a node building that will contain all blocks
-	var node = Spatial.new()
+	#The surfacetool that will be used to generate the whole building
+	var surface = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	#The surfacetool that will be used to generate the siluete of the building
+	var surface_siluete = SurfaceTool.new()
+	surface_siluete.begin(Mesh.PRIMITIVE_LINES)
+	
+	#Create a node building that will hold the mesh
+	var node = MeshInstance.new()
 	node.set_name(buildingName)
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
+	addCube(x, y, z, dx, 0.005, dz, buildingColor, surface)
+	addSiluete(x, y, z, dx, 0.005, dz, silueteColor, surface_siluete)
 	
 	##Bottom block
 	#Base
@@ -500,27 +501,43 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 	#Build the blocks
 	var yPos = 0
 	for i in range(blocks):
-		addCube(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, buildingName, drawStructure)
+		addCube(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, buildingColor, surface)
+		addSiluete(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, silueteColor, surface_siluete)
 		yPos += 2* heights[i]
 		dxBase *= rand_range(0.6, 0.8)
 		dzBase *= rand_range(0.6, 0.8)
 		
 	##Add benches
 	#if drawDetails:
-		
+	#Set the created mesh to the node
+	node.set_mesh(surface.commit())
+	
+	#Create the node that will hold the siluete of the building
+	var c = MeshInstance.new()
+	c.set_mesh(surface_siluete.commit())
+	node.add_child(c)
 
 #Adds residential buildings in x, y, z on an area of size * size with height between minHeight and maxHeight
 func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 
 	var buildingName = "bunch" + str(residentialBuildingsCount)
 
-	#Create a node building that will contain all blocks
-	var node = Spatial.new()
+	#The surfacetool that will be used to generate the whole building
+	var surface = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	#The surfacetool that will be used to generate the siluete of the building
+	var surface_siluete = SurfaceTool.new()
+	surface_siluete.begin(Mesh.PRIMITIVE_LINES)
+	
+	#Create a node building that will hold the mesh
+	var node = MeshInstance.new()
 	node.set_name(buildingName)
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
+	addCube(x, y, z, dx, 0.005, dz, buildingColor, surface)
+	addSiluete(x, y, z, dx, 0.005, dz, silueteColor, surface_siluete)
 	
 	##Add row of buildings in Z axis
 	#Widths
@@ -538,7 +555,12 @@ func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x + dx - 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, rand_range(minHeight, maxHeight), width, buildingName, drawStructure)
+	
+		var localDy = rand_range(minHeight, maxHeight)
+		
+		addCube(x + dx - 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, localDy, width, buildingColor, surface)
+		addSiluete(x + dx - 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, localDy, width, silueteColor, surface_siluete)
+		
 		acumWidth += width * 2
 	
 	##Add row of buildings in the other side of the Z axis
@@ -557,7 +579,11 @@ func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x - dx + 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, rand_range(minHeight, maxHeight), width, buildingName, drawStructure)
+		
+		var localDy = rand_range(minHeight, maxHeight)
+		
+		addCube(x - dx + 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, localDy, width, buildingColor, surface)
+		addSiluete(x - dx + 0.2 * dx, y, z + dz - width - acumWidth, 0.2 * dx, localDy, width, silueteColor, surface_siluete)
 		acumWidth += width * 2
 		
 	##Add row of buildings in the X axis
@@ -576,7 +602,11 @@ func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z + dz - 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName, drawStructure)
+	
+		var localDy = rand_range(minHeight, maxHeight)
+		
+		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z + dz - 0.2 * dz, width, localDy, 0.2 * dz, buildingColor, surface)
+		addSiluete(x + dx - width - 0.4 * dx - acumWidth, y, z + dz - 0.2 * dz, width, localDy, 0.2 * dz, silueteColor, surface_siluete)
 		acumWidth += width * 2
 		
 	##Add the other row of buildings in the X axis
@@ -595,10 +625,22 @@ func addResidentialBuildings(x, y, z, dx, dz, minHeight, maxHeight):
 	#Create the blocks
 	var acumWidth = 0
 	for width in widths:
-		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z - dz + 0.2 * dz, width, rand_range(minHeight, maxHeight), 0.2 * dz, buildingName, drawStructure)
+	
+		var localDy = rand_range(minHeight, maxHeight)
+		
+		addCube(x + dx - width - 0.4 * dx - acumWidth, y, z - dz + 0.2 * dz, width, localDy, 0.2 * dz, buildingColor, surface)
+		addSiluete(x + dx - width - 0.4 * dx - acumWidth, y, z - dz + 0.2 * dz, width, localDy, 0.2 * dz, silueteColor, surface_siluete)
 		acumWidth += width * 2
 		
 	residentialBuildingsCount += 1
+	
+	#Set the created mesh to the node
+	node.set_mesh(surface.commit())
+	
+	#Create the node that will hold the siluete of the building
+	var c = MeshInstance.new()
+	c.set_mesh(surface_siluete.commit())
+	node.add_child(c)
 	
 #Adds a house in x, y, z on an area of size*size
 func addHouse(x, y, z, dx, dz):
