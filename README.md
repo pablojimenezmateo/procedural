@@ -8,7 +8,8 @@ This is the second time for me programming videogames and the first with 3D.
 Goals
 -----------
 * Free camera (Counter-Strike death camera like). ✔
-* Get a cube with transparency to work. ✔
+* ~~Get a cube with transparency to work. ✔~~
+* Buildings now work with meshes.
 * Creation of the buildings.
   * Block buildings. ✔
     * Maybe add some palms. ✔ ~~[Video](http://youtu.be/ZoA9LGPK1aw)~~ [New video](http://youtu.be/KuFNl1qacbk)
@@ -16,7 +17,7 @@ Goals
     * Add floor framings. ✔ [Video](http://youtu.be/Sr2Ef5iaPls)
       * Must work out the memory problem. ✔ (Wasn't a memory problem, a released fixed it)
       * Must implement LOD for this to work properly. ✔
-      * The non drawn objects still count for the max_render_elements.
+      * ~~The non drawn objects still count for the max_render_elements.~~
   * Piramidal buildings. ✔ [Video](http://youtu.be/2TflFoWQHJs)
     * Maybe add some details.
   * Residential buildings. ✔ [Video](http://youtu.be/bdShgGLUZZk)

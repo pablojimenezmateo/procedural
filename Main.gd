@@ -1,11 +1,11 @@
 extends Spatial
 
 #1 meter = 0.01 units
-
-var cubeWithBorders = preload("res://resources/cubeWithBorders.res")
-var cubeWhite = preload("res://resources/cubeWhite.res")
-var cubeTransparent = preload("res://resources/cubeTransparent.res")
-var ground = preload("res://resources/ground.res")
+#
+#var cubeWithBorders = preload("res://resources/cubeWithBorders.res")
+#var cubeWhite = preload("res://resources/cubeWhite.res")
+#var cubeTransparent = preload("res://resources/cubeTransparent.res")
+#var ground = preload("res://resources/ground.res")
 var palm = preload("res://resources/palm.res")
 var tree = preload("res://resources/tree.res")
 
@@ -22,7 +22,7 @@ var residentialBuildingsCount = 0
 
 ##Flags
 #When enabled, the structure of the buildings is drawn
-var drawStructure = true
+var drawStructure = false
 
 #When enabled, palms, antennas and some other details are added
 var drawDetails = true
@@ -32,28 +32,28 @@ func _ready():
 	#The initial seed
 	#rand_seed(42)
 	randomize()
-
-	set_process(true)
-	set_process_input(true)
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	#Add ground
-	var g = ground.instance()
-	g.set_name("ground")
-	add_child(g)
+#	#Add ground
+#	var g = ground.instance()
+#	g.set_name("ground")
+#	add_child(g)
 	
-	#Trials
-	for i in range(10):
-		for j in range(10):
-			var toggle = randi() % 3
-			if toggle == 0:
-				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 1:
-				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 2:
-				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+#	#Trials
+#	for i in range(10):
+#		for j in range(10):
+#			var toggle = randi() % 3
+#			if toggle == 0:
+#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 1:
+#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 2:
+#				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 
 #	addHouse(0, 0, 0, 1, 0.5)
+#
+	for i in range(10):
+		for j in range(10):
+			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
 #	addBlockyBuilding(0, 0, 0, 1, 1)
 #	addPiramidalBuilding(0, 0, 4, 1, 1)
 #	addPiramidalBuilding(0, 0, 0, 1, 1)
@@ -61,159 +61,256 @@ func _ready():
 #	addResidentialBuildings(0, 0, 8, 1, 1, 0.80, 1.40)
 #	get_node("blocky0").set_rotation(Vector3(0, PI/3, 0))
 
-	
-
-#This is used to translate the camera around
-func _process(delta):
-
-	var camSpeed = 5
-	var camera = get_node("ghost_cam")
-	var cube = get_node("TestCube")
-	
-	if Input.is_action_pressed("ui_up"):
-		camera.set_translation(camera.get_translation() - camera.get_global_transform().basis[2] * delta* camSpeed)
-		
-	if Input.is_action_pressed("ui_down"):
-		camera.set_translation(camera.get_translation() + camera.get_global_transform().basis[2] * delta* camSpeed)
-		
-	if Input.is_action_pressed("ui_left"):
-		camera.set_translation(camera.get_translation() - camera.get_global_transform().basis[0] * delta* camSpeed)
-		
-	if Input.is_action_pressed("ui_right"):
-		camera.set_translation(camera.get_translation() + camera.get_global_transform().basis[0] * delta* camSpeed)
-		
-	if Input.is_action_pressed("quit"):
-		get_tree().quit()
-
-#Horizontal movement
-var yaw = 0
-
-#Vertical movement
-var pitch = 0
-
-#This function is used to rotate the camera
-func _input(event):
-
-	var view_sensitivity = 0.003
-	var camera = get_node("ghost_cam")
-	
-	if (event.type == InputEvent.MOUSE_MOTION):
-	
-		#Calculate the rotation angle
-		yaw = yaw - event.relative_x * view_sensitivity 
-		pitch = pitch - event.relative_y * view_sensitivity
-	
-		#Yeah!, maths!
-		
-		#The basic explanation with examples can be found here
-		#http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/steps/index.htm
-		var q  = Quat()
-		var c1 = cos(yaw/2)
-		var c2 = 1
-		var c3 = cos(pitch/2)
-		var s1 = sin(yaw/2)
-		var s2 = 0
-		var s3 = sin(pitch/2)
-		
-		q.w = c1 * c2 * c3 - s1 * s2 * s3
-		q.x = s1 * s2 * c3 + c1 * c2 * s3
-		q.y = s1 * c2 * c3 + c1 * s2 * s3
-		q.z = c1 * s2 * c3 - s1 * c2 * s3
-		q = q.normalized()
-		
-		#The transformation moves the camera to the origin, so we need to store its previous position to move it back
-		var trans = camera.get_translation()
-		
-		#Rotate the camera
-		camera.set_global_transform(Transform(q))
-		
-		#Move it back
-		camera.set_translation(trans)
 
 #Adds a cube centered in x, y z with x dimension dx, y dimension dy and z dimension dz. Is structure is set, it draws the structure of the cube.
-func addCube(x, y, z, dx, dy, dz, id, structure):
-
-	print("Creating cube")
+#func addCubeoLD(x, y, z, dx, dy, dz, structure):
+#
+#	print("Creating cube")
+#
+#	if not structure:
+#		#Instanciate the .res
+#		var b = cubeWithBorders.instance()
+#
+#		#Set a name so we can work with it later
+#		var currentName = "c" + str(cubeCount)
+#		b.set_name(currentName)
+#
+#		#Move, and make sure it is above the ground
+#		b.set_translation(Vector3(x, y + dy, z))
+#
+#		#Resize
+#		b.set_scale(Vector3(dx, dy, dz))
+#
+#		#Add to node
+#		add_child(b)
+#
+#		#Keep the count
+#		cubeCount += 1
+#
+#	else:
+#
+#		#Add a big transparent cube and then the structure
+#		#Windows
+#		var trans = cubeTransparent.instance()
+#
+#		trans.set_translation(Vector3(x, y + dy, z))
+#		trans.set_scale(Vector3(dx, dy, dz))
+#
+#		add_child(trans)
+#		cubeCount += 1
+#
+#		#The slabs
+#		var heightLeft = dy * 2
+#		var accumHeight = 0
+#
+#		while(heightLeft > 0.03):
+#
+#			##Instanciate the .res
+#			#Floor framing
+#			var white = cubeWhite.instance()
+#			white.set_scale(Vector3(dx, 0.003, dz))
+#			white.set_translation(Vector3(x, y + 0.03/2 + accumHeight, z))
+#
+#			#Set a range to be displayed, this hugely improves performance
+#			white.set("geometry/range_end", 8)
+#
+#			#Add to node
+#			add_child(white)
+#
+#			heightLeft -= 0.03
+#			accumHeight += 0.03
+#
+#			#Keep the count
+#			cubeCount += 1
+#
+#		#The a little top
+#		var white = cubeWhite.instance()
+#		white.set_scale(Vector3(dx, 0.003, dz))
+#		white.set_translation(Vector3(x, y + dy*2.0, z))
+#		white.set("geometry/range_end", 8)
+#		add_child(white)
+#		cubeCount += 1
+#
+#	print("Cube count: ", cubeCount)
+#
+#Appends a cubes to an existing Surfacetool
+func addCube(x, y, z, dx, dy, dz, color, surface):
 	
-	if not structure:
-		#Instanciate the .res
-		var b = cubeWithBorders.instance()
-		
-		#Set a name so we can work with it later
-		var currentName = "c" + str(cubeCount)
-		b.set_name(currentName)
-		
-		#Move, and make sure it is above the ground
-		b.set_translation(Vector3(x, y + dy, z))
-		
-		#Resize
-		b.set_scale(Vector3(dx, dy, dz))
-		
-		#Add to node
-		get_node(id).add_child(b)
-		
-		#Keep the count
-		cubeCount += 1
-		
-	else:
-			
-		#Add a big transparent cube and then the structure
-		#Windows
-		var trans = cubeTransparent.instance()
-		
-		trans.set_translation(Vector3(x, y + dy, z))
-		trans.set_scale(Vector3(dx, dy, dz))
-		
-		get_node(id).add_child(trans)
-		cubeCount += 1
-		
-		#The framing
-		var heightLeft = dy * 2
-		var accumHeight = 0
-		
-		while(heightLeft > 0.03):
-		
-			##Instanciate the .res		
-			#Floor framing
-			var white = cubeWhite.instance()
-			white.set_scale(Vector3(dx, 0.003, dz))
-			white.set_translation(Vector3(x, y + 0.03/2 + accumHeight, z))
-			
-			#Set a range to be displayed, this hugely improves performance
-			white.set("geometry/range_end", 8)
-			
-			#Add to node
-			get_node(id).add_child(white)
-
-			heightLeft -= 0.03
-			accumHeight += 0.03
-			
-			#Keep the count
-			cubeCount += 1
-		
-		#The a little top
-		var white = cubeWhite.instance()
-		white.set_scale(Vector3(dx, 0.003, dz))
-		white.set_translation(Vector3(x, y + dy*2.0, z))
-		white.set("geometry/range_end", 8)
-		get_node(id).add_child(white)
-		cubeCount += 1
+	#This allows to use RGB colors instead of images. Spooner is a genius!
+	var material = FixedMaterial.new()
+	material.set_fixed_flag(FixedMaterial.FLAG_USE_COLOR_ARRAY, true)
 	
-	print("Cube count: ", cubeCount)
+	#Allow transparency
+	material.set_fixed_flag(FixedMaterial.FLAG_USE_ALPHA, true)
+	surface.set_material(material)
+	
+	#This is the central point in the base of the cube
+	var base = Vector3(x, y + dy, z)
+	
+	##Corners of the cube
+	var corners = []
+	
+	#Top
+	corners.push_back(base + Vector3(-dx,  dy, -dz))
+	corners.push_back(base + Vector3( dx,  dy, -dz))
+	corners.push_back(base + Vector3( dx,  dy,  dz))
+	corners.push_back(base + Vector3(-dx,  dy,  dz))
+	
+	#Bottom
+	corners.push_back(base + Vector3(-dx, -dy, -dz))
+	corners.push_back(base + Vector3( dx, -dy, -dz))
+	corners.push_back(base + Vector3( dx, -dy,  dz))
+	corners.push_back(base + Vector3(-dx, -dy,  dz))
+	
+	#Color red
+	#surface.add_uv(Vector2(0, 0.1))
+	surface.add_color(color)
 
+	##Adding the corners in order, calculated by hand
+	#Top
+	surface.add_normal(Vector3(0, 1, 0))
+	surface.add_vertex(corners[0])
+	surface.add_vertex(corners[1])
+	surface.add_vertex(corners[2])
+	surface.add_vertex(corners[2])
+	surface.add_vertex(corners[3])
+	surface.add_vertex(corners[0])
+	
+	#One side
+	surface.add_vertex(corners[0])
+	surface.add_vertex(corners[4])
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[1])
+	surface.add_vertex(corners[0])
 
+	#Other side
+	surface.add_vertex(corners[6])
+	surface.add_vertex(corners[2])
+	surface.add_vertex(corners[1])
+	surface.add_vertex(corners[1])
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[6])
+
+	#Other side
+	surface.add_vertex(corners[3])
+	surface.add_vertex(corners[2])
+	surface.add_vertex(corners[6])
+	surface.add_vertex(corners[6])
+	surface.add_vertex(corners[7])
+	surface.add_vertex(corners[3])
+
+	#Other side
+	surface.add_vertex(corners[0])
+	surface.add_vertex(corners[3])
+	surface.add_vertex(corners[7])
+	surface.add_vertex(corners[7])
+	surface.add_vertex(corners[4])
+	surface.add_vertex(corners[0])
+	
+	#Bottom
+	surface.add_vertex(corners[6])
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[7])
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[4])
+	surface.add_vertex(corners[7])
+
+#Adds a siluete as a child of this node
+func addSiluete(x, y, z, dx, dy, dz, color, surface):
+	
+	#This allows to use RGB colors instead of images
+	var material = FixedMaterial.new()
+	material.set_fixed_flag(FixedMaterial.FLAG_USE_COLOR_ARRAY, true)
+	surface.set_material(material)
+	
+	#This is the central point in the base of the cube
+	var base = Vector3(x, y + dy, z)
+	
+	##Corners of the cube
+	var corners = []
+	
+	#Top
+	corners.push_back(base + Vector3(-dx,  dy, -dz))
+	corners.push_back(base + Vector3( dx,  dy, -dz))
+	corners.push_back(base + Vector3( dx,  dy,  dz))
+	corners.push_back(base + Vector3(-dx,  dy,  dz))
+	
+	#Bottom
+	corners.push_back(base + Vector3(-dx, -dy, -dz))
+	corners.push_back(base + Vector3( dx, -dy, -dz))
+	corners.push_back(base + Vector3( dx, -dy,  dz))
+	corners.push_back(base + Vector3(-dx, -dy,  dz))
+	
+	#Color
+	surface.add_color(color)
+	surface.add_normal(Vector3(0, 1, 0))
+
+	##Joining all vertex
+	surface.add_vertex(corners[0])
+	surface.add_vertex(corners[1])
+	
+	surface.add_vertex(corners[1])
+	surface.add_vertex(corners[2])
+	
+	surface.add_vertex(corners[2])
+	surface.add_vertex(corners[3])
+	
+	surface.add_vertex(corners[3])
+	surface.add_vertex(corners[0])
+	
+	surface.add_vertex(corners[0])
+	surface.add_vertex(corners[4])
+	
+	surface.add_vertex(corners[4])
+	surface.add_vertex(corners[5])
+	
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[1])
+	
+	surface.add_vertex(corners[5])
+	surface.add_vertex(corners[6])
+	
+	surface.add_vertex(corners[6])
+	surface.add_vertex(corners[2])
+	
+	surface.add_vertex(corners[6])
+	surface.add_vertex(corners[7])
+	
+	surface.add_vertex(corners[3])
+	surface.add_vertex(corners[7])
+	
+	surface.add_vertex(corners[7])
+	surface.add_vertex(corners[4])
+
+#	#Get the mesh
+#	var mesh = surface.commit()
+#
+#	#Set the mesh
+#	mesh_child.set_mesh(mesh)
+#	add_child(mesh_child)
+	
 #Adds a blocky building in x, y, z on an area of size*size
 func addBlockyBuilding(x, y, z, dx, dz):
 
 	var buildingName = "blocky" + str(blockyBuildingCount)
 	
-	#Create a node building that will contain all blocks
-	var node = Spatial.new()
+	#The surfacetool that will be used to generate the whole building
+	var surface = SurfaceTool.new()
+	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	#The surfacetool that will be used to generate the siluete of the building
+	var surface_siluete = SurfaceTool.new()
+	surface_siluete.begin(Mesh.PRIMITIVE_LINES)
+	
+	#Create a node building that will hold the mesh
+	var node = MeshInstance.new()
 	node.set_name(buildingName)
 	add_child(node)
 	
 	#Floor
-	addCube(x, y, z, dx, 0.005, dz, buildingName, false)
+	addCube(x, y, z, dx, 0.005, dz, Color(1, 1, 1, 0.5), surface)
+	addSiluete(x, y, z, dx, 0.005, dz, Color(1, 1, 1), surface_siluete)
 	
 	##First block
 	#Base
@@ -240,26 +337,34 @@ func addBlockyBuilding(x, y, z, dx, dz):
 	
 	if shape == 0 or shape == 1: #20% of 4 towers
 		
-		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1), surface_siluete)
 		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
-		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal - dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
 		
 	elif shape == 2: #10% of 3 towers
 	
-		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal + dzBase/2, dxBase/2, maxHeight, dzBase/2, Color(1, 1, 1), surface_siluete)
 		var h = rand_range(0.7 * maxHeight, 0.9 * maxHeight)
-		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal + dxBase/2, y, zLocal - dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
-		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, buildingName, drawStructure)
+		addCube(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1, 0.5), surface)
+		addSiluete(xLocal - dxBase/2, y, zLocal + dzBase/2, dxBase/2, h, dzBase/2, Color(1, 1, 1), surface_siluete)
 		h = rand_range(0.7 * h, 0.9 * h)
 		
 	else: #70% of regular building
 	
-		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, buildingName, drawStructure)
+		addCube(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, Color(1, 1, 1, 0.5), surface)
+		addSiluete(x + xOffset, y, z + zOffset, dxBase, maxHeight, dzBase, Color(1, 1, 1), surface_siluete)
 	
 	if drawDetails:
 		
@@ -342,6 +447,14 @@ func addBlockyBuilding(x, y, z, dx, dz):
 				get_node(buildingName).add_child(t)
 	
 	blockyBuildingCount += 1
+	
+	#Set the created mesh to the node
+	node.set_mesh(surface.commit())
+	
+	#Create the node that will hold the siluete of the building
+	var c = MeshInstance.new()
+	c.set_mesh(surface_siluete.commit())
+	node.add_child(c)
 
 #Adds a piramidal building in x, y, z on an area of size*size
 func addPiramidalBuilding(x, y, z, dx, dz):
