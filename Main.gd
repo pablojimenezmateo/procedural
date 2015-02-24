@@ -133,14 +133,14 @@ func _ready():
 #	print("Cube count: ", cubeCount)
 
 #Appends a cube to an existing Surfacetool
-func addCube(x, y, z, dx, dy, dz, color, surface):
+func addCube(x, y, z, dx, dy, dz, color, surface, useAlpha = true):
 	
 	#This allows to use RGB colors instead of images. Spooner is a genius!
 	var material = FixedMaterial.new()
 	material.set_fixed_flag(FixedMaterial.FLAG_USE_COLOR_ARRAY, true)
 	
 	#Allow transparency
-	material.set_fixed_flag(FixedMaterial.FLAG_USE_ALPHA, true)
+	material.set_fixed_flag(FixedMaterial.FLAG_USE_ALPHA, useAlpha)
 	surface.set_material(material)
 	
 	#This is the central point in the base of the cube
