@@ -1,10 +1,6 @@
 
 extends Camera
 
-# member variables here, example:
-# var a=2
-# var b="textvar"
-
 func _ready():
 
 	set_process(true)
@@ -14,8 +10,14 @@ func _ready():
 #This is used to translate the camera around
 func _process(delta):
 
-	var camSpeed = 5
-	var cube = get_node("TestCube")
+	var camSpeed
+	
+	if Input.is_action_pressed("sprint"):
+		camSpeed = 15
+	elif Input.is_action_pressed("slow"):
+		camSpeed = 1
+	else:
+		camSpeed = 5
 	
 	if Input.is_action_pressed("ui_up"):
 		set_translation(get_translation() - get_transform().basis[2] * delta* camSpeed)

@@ -44,21 +44,21 @@ func _ready():
 	randomize()
 	
 	#Trials
-	for i in range(10):
-		for j in range(10):
-			var toggle = randi() % 3
-			if toggle == 0:
-				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 1:
-				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-			elif toggle == 2:
-				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+#	for i in range(100):
+#		for j in range(100):
+#			var toggle = randi() % 3
+#			if toggle == 0:
+#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 1:
+#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#			elif toggle == 2:
+#				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 #
 #	addHouse(0, 0, 0, 1, 0.5)
 #
-#	for i in range(10):
-#		for j in range(10):
-#			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+	for i in range(10):
+		for j in range(10):
+			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
 #	addBlockyBuilding(0, 0, 0, 1, 1)
 #	addPiramidalBuilding(0, 0, 4, 1, 1)
 #	addPiramidalBuilding(0, 0, 0, 1, 1)
@@ -67,14 +67,14 @@ func _ready():
 #	get_node("blocky0").set_rotation(Vector3(0, PI/3, 0))
 
 #Appends a cube to an existing Surfacetool
-func addCubeMesh(x, y, z, dx, dy, dz, color, surface, useAlpha = true):
+func addCubeMesh(x, y, z, dx, dy, dz, color, surface, blendMode = "sub"):
 	
 	#This allows to use RGB colors instead of images. Spooner is a genius!
 	var material = FixedMaterial.new()
 	material.set_fixed_flag(FixedMaterial.FLAG_USE_COLOR_ARRAY, true)
 	
 	#Allow transparency
-	material.set_fixed_flag(FixedMaterial.FLAG_USE_ALPHA, useAlpha)
+	material.set_fixed_flag(FixedMaterial.FLAG_USE_ALPHA, true)
 	surface.set_material(material)
 	
 	#This is the central point in the base of the cube
@@ -465,7 +465,7 @@ func addPiramidalBuilding(x, y, z, dx, dz):
 	
 		addTower(x + xOffset, yPos, z + zOffset, dxBase, heights[i], dzBase, surface, surface_siluete)
 		
-		yPos += 2* heights[i]
+		yPos += 2 * heights[i]
 		dxBase *= rand_range(0.6, 0.8)
 		dzBase *= rand_range(0.6, 0.8)
 		
