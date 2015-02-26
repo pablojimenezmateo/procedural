@@ -4,7 +4,7 @@ extends Spatial
 
 ##Flags, you can play with them
 #When enabled, the structure of the buildings is drawn
-var drawStructure = true
+var drawStructure = false
 
 #When enabled, palms, antennas and some other details are added
 var drawDetails = true
@@ -44,21 +44,21 @@ func _ready():
 	randomize()
 	
 	#Trials
-#	for i in range(100):
-#		for j in range(100):
-#			var toggle = randi() % 3
-#			if toggle == 0:
-#				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 1:
-#				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
-#			elif toggle == 2:
-#				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
+	for i in range(100):
+		for j in range(100):
+			var toggle = randi() % 3
+			if toggle == 0:
+				addPiramidalBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 1:
+				addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+			elif toggle == 2:
+				addResidentialBuildings(9 - j*4, 0, 9 - i*4, 1, 1, 0.80, 1.40)
 #
 #	addHouse(0, 0, 0, 1, 0.5)
 #
-	for i in range(10):
-		for j in range(10):
-			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
+#	for i in range(10):
+#		for j in range(10):
+#			addBlockyBuilding(9 - j*4, 0, 9 - i*4, 1, 1)
 #	addBlockyBuilding(0, 0, 0, 1, 1)
 #	addPiramidalBuilding(0, 0, 4, 1, 1)
 #	addPiramidalBuilding(0, 0, 0, 1, 1)
